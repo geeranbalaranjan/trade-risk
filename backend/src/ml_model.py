@@ -1,5 +1,5 @@
 """
-TariffShock ML Model
+TradeRisk ML Model
 ====================
 Neural network for predicting tariff impact risk.
 Trained on historical sector trade data and tariff scenarios.

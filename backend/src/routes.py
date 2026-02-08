@@ -1,5 +1,5 @@
 """
-TariffShock API Routes
+TradeRisk API Routes
 ======================
 HTTP API endpoints for the Risk Engine.
 
@@ -17,6 +17,7 @@ from .risk_engine import RiskEngine, create_risk_engine
 from .load_data import load_data, get_data_loader
 from .ml_model import TariffRiskNN
 from .routes_backboard import register_backboard_routes
+from .routes_gemini import register_gemini_routes
 
 logger = logging.getLogger(__name__)
 
@@ -559,6 +560,7 @@ def create_app(data_dir: Optional[str] = None) -> Flask:
         return jsonify({"error": "Internal server error"}), 500
     
     register_backboard_routes(app)
+    register_gemini_routes(app)
     
     return app
 

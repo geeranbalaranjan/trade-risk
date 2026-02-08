@@ -1,7 +1,7 @@
 """
 Backboard Data Layer
 ====================
-Maps TariffShock outputs to Backboard.io documents and provides caching policy.
+Maps TradeRisk outputs to Backboard.io documents and provides caching policy.
 """
 
 from __future__ import annotations
@@ -74,7 +74,7 @@ class CachedResult:
 
 
 class BackboardDataLayer:
-    """Coordinates Backboard caching with TariffShock computation."""
+    """Coordinates Backboard caching with TradeRisk computation."""
 
     def __init__(
         self,
