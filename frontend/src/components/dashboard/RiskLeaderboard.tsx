@@ -38,6 +38,7 @@ interface RiskLeaderboardProps {
 
 export const RiskLeaderboard = ({ scenarioResult, onSectorClick, selectedSectorId }: RiskLeaderboardProps) => {
     const rows = resultToRows(scenarioResult);
+    const maxRisk = rows.reduce((max, row) => (row.risk > max ? row.risk : max), 0);
     return (
         <div className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden flex flex-col h-[400px]">
             <div className="px-6 py-4 border-b border-white/5 flex justify-between items-center">
@@ -80,7 +81,7 @@ export const RiskLeaderboard = ({ scenarioResult, onSectorClick, selectedSectorI
                                                     row.risk > 70 ? "bg-rose-500/80" :
                                                         row.risk > 40 ? "bg-amber-500/80" : "bg-emerald-500/80"
                                                 )}
-                                                style={{ width: `${row.risk}%` }}
+                                                style={{ width: `${maxRisk > 0 ? (row.risk / maxRisk) * 100 : 0}%` }}
                                             />
                                         </div>
                                         <span className="text-sm text-white/70 font-mono">{row.risk}</span>
