@@ -64,8 +64,8 @@ def main():
         
         history = model.train(
             str(data_csv),
-            epochs=200,
-            batch_size=8,
+            epochs=120,
+            batch_size=16,
             validation_split=0.2
         )
         

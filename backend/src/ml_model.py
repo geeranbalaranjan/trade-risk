@@ -61,19 +61,14 @@ class TariffRiskNN:
         model = models.Sequential([
             layers.Input(shape=(input_dim,)),
             
-            # First dense block
+            # Balanced architecture with moderate regularization
             layers.Dense(64, activation='relu', name='dense_1'),
-            layers.BatchNormalization(),
-            layers.Dropout(0.3),
-            
-            # Second dense block
-            layers.Dense(32, activation='relu', name='dense_2'),
-            layers.BatchNormalization(),
             layers.Dropout(0.2),
             
-            # Third dense block
+            layers.Dense(32, activation='relu', name='dense_2'),
+            layers.Dropout(0.15),
+            
             layers.Dense(16, activation='relu', name='dense_3'),
-            layers.Dropout(0.1),
             
             # Output layer (bounded 0-100)
             layers.Dense(1, activation='sigmoid', name='output')
@@ -128,7 +123,7 @@ class TariffRiskNN:
         
         return X, y, feature_cols
     
-    def train(self, csv_path: str, epochs: int = 100, batch_size: int = 16, 
+    def train(self, csv_path: str, epochs: int = 120, batch_size: int = 16, 
               validation_split: float = 0.2) -> Dict:
         """
         Train the neural network on sector data.
@@ -158,7 +153,7 @@ class TariffRiskNN:
         logger.info("Building model...")
         self.model = self._build_model(X_scaled.shape[1])
         
-        # Train
+        # Train with early stopping for balanced performance
         logger.info(f"Training for {epochs} epochs...")
         history = self.model.fit(
             X_train, y_train,
@@ -169,8 +164,9 @@ class TariffRiskNN:
             callbacks=[
                 keras.callbacks.EarlyStopping(
                     monitor='val_loss',
-                    patience=10,
-                    restore_best_weights=True
+                    patience=15,
+                    restore_best_weights=True,
+                    verbose=0
                 )
             ]
         )
@@ -178,8 +174,11 @@ class TariffRiskNN:
         self.is_trained = True
         
         # Log final metrics
+        final_train_loss = history.history['loss'][-1]
+        final_train_mae = history.history['mae'][-1]
         final_val_loss = history.history['val_loss'][-1]
         final_val_mae = history.history['val_mae'][-1]
+        logger.info(f"Final train loss: {final_train_loss:.6f}, train MAE: {final_train_mae:.6f}")
         logger.info(f"Final val loss: {final_val_loss:.6f}, val MAE: {final_val_mae:.6f}")
         
         return history.history
